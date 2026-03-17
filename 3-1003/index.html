@@ -11,6 +11,7 @@
             .logo {
                 width: 80px;
                 height: 80px;
+                object-fit: contain;
             }
 
             .cabecalho {
@@ -44,6 +45,7 @@
             .titulo-secao {
                 text-align: center;
                 margin: 0;
+                padding-top: 5px;
                 color: #FFFFFF;
             }
 
@@ -64,6 +66,34 @@
             
             .p-texto{
                 width: 300px;
+            }
+            
+            .circulo {
+                background-color: #d9d9d9;
+                width: 41px;
+                height: 41px;
+                border-radius: 50%;
+            }
+            
+            .rodape {
+                display: flex;
+                background-color: #000000;
+                color: #FFFFFF;
+                /*justify-content: space-around;*/
+                align-items: center;
+            }
+            
+            .circulos  {
+                display: flex;
+            }
+            
+            .rodape-laterais {
+                flex: 1;
+            }
+            
+            .rodape-centro {
+                flex: 3;
+                text-align: center;
             }
         </style>
     </head>
@@ -121,6 +151,19 @@
                 </div>
             </div>
         </section>
-        <footer>© Todos os direitos reservados - Pimba sites</footer>
+        <footer class="rodape">
+            <img
+                class="rodape-laterais logo"
+                src="https://static.vecteezy.com/system/resources/thumbnails/024/553/534/small/lion-head-logo-mascot-wildlife-animal-illustration-generative-ai-png.png"
+            />
+            <p class="rodape-centro">© Todos os direitos reservados - Pimba sites</p>
+            <div class="circulos rodape-laterais">
+                <div class="circulo"></div>
+                <div class="circulo"></div>
+                <div class="circulo"></div>
+                <div class="circulo"></div>
+                <div class="circulo"></div>
+            </div>
+        </footer>
     </body>
 </html>
