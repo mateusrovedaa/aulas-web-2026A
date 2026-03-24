@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Aula 5 - Inputs</title>
+    </head>
+    <body>
+        <h1>Exemplos com Input</h1>
+
+        <section>
+            <h2>1. Lendo o valor de um input</h2>
+            <input type="text" id="campo-nome" placeholder="Digite seu nome" />
+            <button id="btn-ler">Ler valor</button>
+        </section>
+
+        <section>
+            <h2>2. Exibindo o valor na tela</h2>
+            <button id="btn-exibir">Exibir mensagem</button>
+            <p id="resultado"></p>
+        </section>
+
+        <script>
+            const campoNome = document.getElementById('campo-nome');
+            const btnLer = document.getElementById('btn-ler');
+
+            btnLer.addEventListener('click', function () {
+                const valor = campoNome.value;
+                alert(valor);
+            });
+
+            const btnExibir = document.getElementById('btn-exibir');
+            const resultado = document.getElementById('resultado');
+
+            btnExibir.addEventListener('click', function () {
+                resultado.textContent = 'Olá, mundo!';
+            });
+        </script>
+    </body>
+</html>
