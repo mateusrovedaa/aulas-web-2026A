@@ -8,18 +8,23 @@
         <label for="nome">Nome</label>
         <input id="nome" type="text" placeholder="Digite seu nome..."/>
         <button id="salvar">Salvar</button>
+        <p id="texto"></p>
         
         <script>
           const botao = document.getElementById("salvar");
           const input = document.getElementById("nome");
+          const paragrafo = document.getElementById("texto");
           
           console.log(input);
-          const valorInput = input.value;
           
           function imprimeBatata(){
-            console.log(valorInput);
+            const valorInput = input.value;
+            window.alert(valorInput);
+            input.value = "";
+            paragrafo.textContent = valorInput;
           }
           
+          botao.addEventListener('click', imprimeBatata);
           // botao.addEventListener('click', function (){
           //   console.log("Batata");
           // });
@@ -27,11 +32,6 @@
           // botao.addEventListener('click', () => {
           //   console.log("Batata");
           // });
-          
-          botao.addEventListener('click', imprimeBatata);
-
-          
-          
         </script>
     </body>
 </html>
