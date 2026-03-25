@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Aula 5 - JavaScript</title>
+        <style>
+            body {
+                font-family: sans-serif;
+                max-width: 600px;
+                margin: 40px auto;
+                padding: 0 20px;
+            }
+
+            h2 {
+                border-bottom: 2px solid #359899;
+                padding-bottom: 6px;
+            }
+
+            section {
+                margin-bottom: 40px;
+            }
+
+            button {
+                padding: 8px 16px;
+                margin: 4px;
+                cursor: pointer;
+            }
+
+            input {
+                padding: 8px;
+                margin: 4px;
+            }
+
+            #contador-valor {
+                font-size: 2rem;
+                font-weight: bold;
+                margin: 0 12px;
+            }
+
+
+            #lista ul {
+                padding-left: 20px;
+            }
+
+            #lista ul li {
+                margin: 4px 0;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Aula 5 - JavaScript</h1>
+
+        <!-- 1. Botão com mensagem (exemplo com onclick) -->
+        <section>
+            <h2>1. Botão com mensagem</h2>
+            <button onclick="alert('Olá! Você clicou no botão!')">Clique aqui</button>
+        </section>
+
+        <!-- 2. Contador -->
+        <section>
+            <h2>2. Contador</h2>
+            <button id="btn-diminuir">-</button>
+            <p id="contador-valor">0</p>
+            <button id="btn-aumentar">+</button>
+        </section>
+
+        <!-- 3. Calculadora -->
+        <section>
+            <h2>3. Calculadora</h2>
+            <input type="number" id="calc-a" placeholder="Número 1" />
+            <input type="number" id="calc-b" placeholder="Número 2" />
+            <div>
+                <button id="btn-somar">+</button>
+                <button id="btn-subtrair">−</button>
+                <button id="btn-multiplicar">×</button>
+                <button id="btn-dividir">÷</button>
+            </div>
+            <p>Resultado: <p id="calc-resultado">-</p></p>
+        </section>
+
+        <!-- 4. Lista de itens -->
+        <section>
+            <h2>4. Lista de itens</h2>
+            <div id="lista">
+                <input type="text" id="item-input" placeholder="Digite um item..." />
+                <button id="btn-adicionar">Adicionar</button>
+                <ul id="lista-ul"></ul>
+            </div>
+        </section>
+
+        <script>
+            // 2. Contador
+            let contador = 0;
+            const btnAumentar = document.getElementById('btn-aumentar');
+            const btnDiminuir = document.getElementById('btn-diminuir');
+            const contadorValor = document.getElementById('contador-valor');
+
+            btnAumentar.addEventListener('click', function () {
+                contador++;
+                contadorValor.textContent = contador;
+            });
+
+            btnDiminuir.addEventListener('click', function () {
+                contador--;
+                contadorValor.textContent = contador;
+            });
+
+            // 3. Calculadora
+            const calcA = document.getElementById('calc-a');
+            const calcB = document.getElementById('calc-b');
+            const calcResultado = document.getElementById('calc-resultado');
+            const btnSomar = document.getElementById('btn-somar');
+            const btnSubtrair = document.getElementById('btn-subtrair');
+            const btnMultiplicar = document.getElementById('btn-multiplicar');
+            const btnDividir = document.getElementById('btn-dividir');
+
+            btnSomar.addEventListener('click', function () {
+                const resultado = Number(calcA.value) + Number(calcB.value);
+                calcResultado.textContent = resultado;
+            });
+
+            btnSubtrair.addEventListener('click', function () {
+                const resultado = Number(calcA.value) - Number(calcB.value);
+                calcResultado.textContent = resultado;
+            });
+
+            btnMultiplicar.addEventListener('click', function () {
+                const resultado = Number(calcA.value) * Number(calcB.value);
+                calcResultado.textContent = resultado;
+            });
+
+            btnDividir.addEventListener('click', function () {
+                const a = Number(calcA.value);
+                const b = Number(calcB.value);
+                if (b === 0) {
+                  const resultado = "Não é possível dividir por zero.";
+                  calcResultado.textContent = resultado;
+                } else {
+                  const resultado = a / b;
+                  calcResultado.textContent = resultado;
+                }
+            });
+
+            // 4. Lista de itens
+            const itemInput = document.getElementById('item-input');
+            const listaUl = document.getElementById('lista-ul');
+            const btnAdicionar = document.getElementById('btn-adicionar');
+
+            btnAdicionar.addEventListener('click', function () {
+              const texto = itemInput.value;
+              const li = document.createElement('li');
+              li.textContent = texto;
+              listaUl.appendChild(li);
+              itemInput.value = '';
+              itemInput.focus();
+            });
+        </script>
+    </body>
+</html>

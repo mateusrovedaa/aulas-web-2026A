@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Botão Fugitivo</title>
+        <style>
+            /* O botão precisa de position absolute para poder
+               ser movido livremente pela tela com top e left */
+            #btn-fugitivo {
+                position: absolute;
+                top: 100px;
+                left: 100px;
+            }
+        </style>
+    </head>
+    <body>
+
+        <button id="btn-fugitivo">Clique aqui!</button>
+
+        <script>
+            // 1. Captura o botão
+            const btn = document.getElementById('btn-fugitivo');
+
+            // 2. Escuta quando o mouse se aproxima do botão
+            btn.addEventListener('mouseover', function () {
+
+                // 3. Gera uma posição aleatória dentro da janela
+                //    Math.random() retorna um número entre 0 e 1
+                //    Multiplicamos pela largura/altura da janela para
+                //    obter uma posição válida na tela
+                const x = Math.random() * (window.innerWidth - 100);
+                const y = Math.random() * (window.innerHeight - 50);
+
+                // 4. Move o botão para a nova posição
+                btn.style.left = x + 'px';
+                btn.style.top = y + 'px';
+            });
+        </script>
+    </body>
+</html>
