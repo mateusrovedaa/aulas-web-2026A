@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Dividir a Conta</title>
+</head>
+<body>
+    <h2>Racha da Conta</h2>
+    <form method="POST" action="processa.php">
+        <label>Valor total da conta (R$):</label><br>
+        <input type="number" step="0.01" name="valor_conta" required><br><br>
+        
+        <label>Quantas pessoas vão dividir?</label><br>
+        <input type="number" name="qtd_pessoas" required min="1"><br><br>
+        
+        <button type="submit">Calcular Divisão</button>
+    </form>
+</body>
+</html>
