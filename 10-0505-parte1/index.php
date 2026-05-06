@@ -14,8 +14,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $valorIdade = $_POST['idade'];
     
     $sql = "INSERT INTO pessoa(nome, idade) VALUES (?, ?)";
-    $smtm = $conexao->prepare($sql);
-    $smtm->execute([$valor, $valorIdade]);
+    $stmt = $conexao->prepare($sql);
+    $stmt->execute([$valor, $valorIdade]);
 }
 
 ?>

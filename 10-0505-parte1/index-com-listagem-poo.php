@@ -31,8 +31,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $pessoa = new Pessoa($_POST['nome'], $_POST['idade']);
 
     $sql = "INSERT INTO pessoa(nome, idade) VALUES (?, ?)";
-    $smtm = $conexao->prepare($sql);
-    $smtm->execute([$pessoa->getNome(), $pessoa->getIdade()]);
+    $stmt = $conexao->prepare($sql);
+    $stmt->execute([$pessoa->getNome(), $pessoa->getIdade()]);
 }
 
 $sqlListagem = "SELECT * FROM pessoa";
