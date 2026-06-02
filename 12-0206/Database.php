@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/Env.php';
+
 // Responsável por criar e fornecer a conexão com o banco de dados
 class Database
 {
@@ -7,11 +9,11 @@ class Database
 
     public function __construct()
     {
-        $host = "db";
-        $port = "5432";
-        $db   = "futebol";
-        $user = "app";
-        $pass = "secret";
+        $host = getenv('DB_HOST');
+        $port = getenv('DB_PORT');
+        $db   = getenv('DB_NAME');
+        $user = getenv('DB_USER');
+        $pass = getenv('DB_PASS');
 
         $dsn = "pgsql:host=$host;port=$port;dbname=$db";
 
