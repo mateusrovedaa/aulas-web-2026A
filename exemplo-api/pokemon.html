@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Pokimaos</title>
+</head>
+    <body>
+        <p id="nome-pokemon"></p>
+        <script>
+        async function main(){
+          const paragrafosinho = document.getElementById("nome-pokemon");
+          const dados = await fetch("https://pokeapi.co/api/v2/pokemon/snorlax");
+          const resposta = await dados.json();
+          // paragrafosinho.textContent = JSON.stringify(resposta);
+          paragrafosinho.textContent = resposta.sprites.back_default;
+        }
+
+        main();
+        </script>
+    </body>
+</html>
