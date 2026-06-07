@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>APIs - Input do Usuário</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 700px; margin: 0 auto; padding: 20px; }
+    h2 { border-bottom: 2px solid #333; padding-bottom: 8px; }
+    .campo { display: flex; gap: 8px; margin: 12px 0; }
+    input { padding: 8px; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; flex: 1; }
+    button { padding: 8px 16px; font-size: 1rem; cursor: pointer; background: #0066cc; color: white; border: none; border-radius: 4px; }
+    button:hover { background: #0052a3; }
+    .resultado { background: #f4f4f4; padding: 12px; border-radius: 4px; margin-top: 10px; min-height: 40px; }
+    .erro { color: red; }
+    ul { list-style: none; padding: 0; }
+    li { background: #f4f4f4; margin: 4px 0; padding: 8px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <h1>Extra: Input do Usuário</h1>
+
+  <!-- CEP -->
+  <section>
+    <h2>Buscar endereço por CEP</h2>
+    <div class="campo">
+      <input type="text" id="input-cep" placeholder="Ex: 95967000" maxlength="8">
+      <button onclick="buscarCEP()">Buscar</button>
+    </div>
+    <div class="resultado" id="res-cep">Digite um CEP acima.</div>
+  </section>
+
+  <!-- CNPJ -->
+  <section>
+    <h2>Buscar empresa por CNPJ</h2>
+    <div class="campo">
+      <input type="text" id="input-cnpj" placeholder="Ex: 00360305000104" maxlength="14">
+      <button onclick="buscarCNPJ()">Buscar</button>
+    </div>
+    <div class="resultado" id="res-cnpj">Digite um CNPJ acima (somente números).</div>
+  </section>
+
+  <!-- DDD -->
+  <section>
+    <h2>Buscar cidades por DDD</h2>
+    <div class="campo">
+      <input type="text" id="input-ddd" placeholder="Ex: 51" maxlength="2">
+      <button onclick="buscarDDD()">Buscar</button>
+    </div>
+    <div class="resultado" id="res-ddd">
+      <ul id="lista-ddd"></ul>
+    </div>
+  </section>
+
+  <!-- Feriados por ano -->
+  <section>
+    <h2>Feriados por Ano</h2>
+    <div class="campo">
+      <input type="number" id="input-ano" placeholder="Ex: 2026" min="2000" max="2099">
+      <button onclick="buscarFeriados()">Buscar</button>
+    </div>
+    <div class="resultado">
+      <ul id="lista-feriados-input"></ul>
+    </div>
+  </section>
+
+  <script>
+    async function buscarCEP() {
+      const cep = document.getElementById("input-cep").value.replace(/\D/g, "");
+      const el = document.getElementById("res-cep");
+
+      if (cep.length !== 8) {
+        el.innerHTML = '<span class="erro">CEP deve ter 8 dígitos.</span>';
+        return;
+      }
+
+      el.textContent = "Buscando...";
+      try {
+        const resposta = await fetch(`https://brasilapi.com.br/api/cep/v2/${cep}`);
+        if (!resposta.ok) throw new Error("CEP não encontrado.");
+        const d = await resposta.json();
+        el.textContent = `${d.street}, ${d.neighborhood} — ${d.city}/${d.state}`;
+      } catch (e) {
+        el.innerHTML = `<span class="erro">${e.message}</span>`;
+      }
+    }
+
+    async function buscarCNPJ() {
+      const cnpj = document.getElementById("input-cnpj").value.replace(/\D/g, "");
+      const el = document.getElementById("res-cnpj");
+
+      if (cnpj.length !== 14) {
+        el.innerHTML = '<span class="erro">CNPJ deve ter 14 dígitos.</span>';
+        return;
+      }
+
+      el.textContent = "Buscando...";
+      try {
+        const resposta = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cnpj}`);
+        if (!resposta.ok) throw new Error("CNPJ não encontrado.");
+        const d = await resposta.json();
+        el.innerHTML = `<strong>${d.razao_social}</strong><br>
+          Situação: ${d.descricao_situacao_cadastral}<br>
+          Município: ${d.municipio}/${d.uf}`;
+      } catch (e) {
+        el.innerHTML = `<span class="erro">${e.message}</span>`;
+      }
+    }
+
+    async function buscarDDD() {
+      const ddd = document.getElementById("input-ddd").value.trim();
+      const lista = document.getElementById("lista-ddd");
+
+      if (!/^\d{2}$/.test(ddd)) {
+        lista.innerHTML = '<li class="erro">DDD deve ter 2 dígitos.</li>';
+        return;
+      }
+
+      lista.innerHTML = "<li>Buscando...</li>";
+      try {
+        const resposta = await fetch(`https://brasilapi.com.br/api/ddd/v1/${ddd}`);
+        if (!resposta.ok) throw new Error("DDD não encontrado.");
+        const d = await resposta.json();
+
+        let html = `<li><strong>Estado:</strong> ${d.state}</li>`;
+        for (let i = 0; i < d.cities.length; i++) {
+          html += `<li>${d.cities[i]}</li>`;
+        }
+        lista.innerHTML = html;
+      } catch (e) {
+        lista.innerHTML = `<li class="erro">${e.message}</li>`;
+      }
+    }
+
+    async function buscarFeriados() {
+      const ano = document.getElementById("input-ano").value.trim();
+      const lista = document.getElementById("lista-feriados-input");
+
+      if (!/^\d{4}$/.test(ano)) {
+        lista.innerHTML = '<li class="erro">Informe um ano com 4 dígitos.</li>';
+        return;
+      }
+
+      lista.innerHTML = "<li>Buscando...</li>";
+      try {
+        const resposta = await fetch(`https://brasilapi.com.br/api/feriados/v1/${ano}`);
+        if (!resposta.ok) throw new Error("Ano não encontrado.");
+        const dados = await resposta.json();
+
+        let html = "";
+        for (let i = 0; i < dados.length; i++) {
+          html += `<li><strong>${dados[i].date}</strong> — ${dados[i].name}</li>`;
+        }
+        lista.innerHTML = html;
+      } catch (e) {
+        lista.innerHTML = `<li class="erro">${e.message}</li>`;
+      }
+    }
+  </script>
+</body>
+</html>

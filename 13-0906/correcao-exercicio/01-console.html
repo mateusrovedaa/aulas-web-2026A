@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>APIs - Saída no Console</title>
+</head>
+<body>
+  <h1>APIs BrasilAPI - Saída no Console</h1>
+  <p>Abra o console do navegador (F12) para ver os resultados.</p>
+  <button onclick="executarTodas()">Executar todas as consultas</button>
+
+  <script>
+    // =========================================================
+    // 1. CEP - Consulta endereço por CEP
+    //    GET https://brasilapi.com.br/api/cep/v2/{cep}
+    //    Retorna: cep, state, city, neighborhood, street, service
+    // =========================================================
+    async function consultarCEP() {
+      const cep = "95967000"; // Doutor Ricardo
+      const url = `https://brasilapi.com.br/api/cep/v2/${cep}`;
+
+      const resposta = await fetch(url);
+      const dados = await resposta.json();
+
+      console.log("=== CEP ===");
+      console.log(dados);
+    }
+
+    // =========================================================
+    // 2. CNPJ - Consulta dados de empresa pelo CNPJ
+    //    GET https://brasilapi.com.br/api/cnpj/v1/{cnpj}
+    //    Retorna: razao_social, nome_fantasia, atividade_principal, etc.
+    // =========================================================
+    async function consultarCNPJ() {
+      const cnpj = "00360305000104";
+      const url = `https://brasilapi.com.br/api/cnpj/v1/${cnpj}`;
+
+      const resposta = await fetch(url);
+      const dados = await resposta.json();
+
+      console.log("=== CNPJ ===");
+      console.log(dados);
+    }
+
+    // =========================================================
+    // 3. Feriados Nacionais
+    //    GET https://brasilapi.com.br/api/feriados/v1/{ano}
+    //    Retorna: array de { date, name, type }
+    // =========================================================
+    async function consultarFeriados() {
+      const ano = new Date().getFullYear();
+      const url = `https://brasilapi.com.br/api/feriados/v1/${ano}`;
+
+      const resposta = await fetch(url);
+      const dados = await resposta.json();
+
+      console.log("=== Feriados Nacionais ===");
+      console.log(dados);
+    }
+
+    // =========================================================
+    // 4. DDD - Consulta estado por DDD
+    //    GET https://brasilapi.com.br/api/ddd/v1/{ddd}
+    //    Retorna: state, cities (array de cidades)
+    // =========================================================
+    async function consultarDDD() {
+      const ddd = "51"; // Rio Grande do Sul
+      const url = `https://brasilapi.com.br/api/ddd/v1/${ddd}`;
+
+      const resposta = await fetch(url);
+      const dados = await resposta.json();
+
+      console.log("=== DDD 51 ===");
+      console.log(dados);
+    }
+
+    // =========================================================
+    // 5. Bancos - Lista todos os bancos do Brasil
+    //    GET https://brasilapi.com.br/api/banks/v1
+    //    Retorna: array de { ispb, name, code, fullName }
+    // =========================================================
+    async function consultarBancos() {
+      const url = "https://brasilapi.com.br/api/banks/v1";
+
+      const resposta = await fetch(url);
+      const dados = await resposta.json();
+
+      console.log("=== Bancos (primeiros 5) ===");
+      console.log(dados.slice(0, 5));
+    }
+
+    // =========================================================
+    // 6. IBGE - Lista municípios de um estado
+    //    GET https://brasilapi.com.br/api/ibge/municipios/v1/{siglaUF}
+    //    siglaUF: RS, SP, MG, etc.
+    //    Retorna: array de { nome, codigo_ibge }
+    // =========================================================
+    async function consultarIBGE() {
+      const url = "https://brasilapi.com.br/api/ibge/municipios/v1/RS";
+
+      const resposta = await fetch(url);
+      const dados = await resposta.json();
+
+      console.log("=== Municípios RS - IBGE (primeiros 5) ===");
+      console.log(dados.slice(0, 5));
+    }
+
+    async function executarTodas() {
+      await consultarCEP();
+      await consultarCNPJ();
+      await consultarFeriados();
+      await consultarDDD();
+      await consultarBancos();
+      await consultarIBGE();
+      console.log("Todas as consultas concluídas!");
+    }
+  </script>
+</body>
+</html>

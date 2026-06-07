@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Times de Futebol</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                max-width: 800px;
+                margin: 32px auto;
+                padding: 0 16px;
+            }
+            h1 {
+                margin-bottom: 24px;
+            }
+            label {
+                display: inline-block;
+                margin: 4px 0 2px;
+                font-size: 0.85rem;
+            }
+            input {
+                display: block;
+                padding: 6px 10px;
+                margin-bottom: 10px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                width: 100%;
+            }
+            button {
+                padding: 7px 16px;
+                margin-right: 6px;
+                cursor: pointer;
+                border: 1px solid #999;
+                border-radius: 4px;
+                background: #f5f5f5;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 32px;
+            }
+            th,
+            td {
+                padding: 9px 12px;
+                text-align: left;
+                border-bottom: 1px solid #ddd;
+            }
+            th {
+                background: #f5f5f5;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Times de Futebol</h1>
+
+        <p>Consumindo: <code>http://localhost:8080</code></p>
+
+        <form
+            onsubmit="salvar(event)"
+            style="max-width: 400px; margin-top: 16px"
+        >
+            <input type="hidden" id="editandoId" />
+            <label>Nome</label>
+            <input id="nome" placeholder="Ex: Grêmio" required />
+            <label>Fundação</label>
+            <input id="fundacao" placeholder="Ex: 1903" required />
+            <label>Estádio</label>
+            <input id="estadio" placeholder="Ex: Arena do Grêmio" required />
+            <label>Cor principal</label>
+            <input id="corPrincipal" placeholder="Ex: Azul" required />
+            <button type="submit">Salvar</button>
+            <button
+                type="button"
+                id="btnCancelar"
+                style="display: none"
+                onclick="
+                    document.getElementById('editandoId').value = '';
+                    document.getElementById('btnCancelar').style.display = 'none';
+                    this.form.reset();
+                "
+            >
+                Cancelar
+            </button>
+        </form>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Nome</th>
+                    <th>Fundação</th>
+                    <th>Estádio</th>
+                    <th>Cor principal</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="lista"></tbody>
+        </table>
+
+        <script>
+            // Endereço base da API.
+            const API = "http://localhost:8080";
+
+            // GET /times — busca todos os times e monta a tabela
+            async function carregar() {
+                const resp = await fetch(`${API}/times`); // requisição GET
+                const times = await resp.json();          // converte o JSON em array de objetos
+
+                let html = "";
+                for (const t of times) {
+                    html += `
+        <tr>
+          <td>${t.id}</td>
+          <td>${t.nome}</td>
+          <td>${t.fundacao}</td>
+          <td>${t.estadio}</td>
+          <td>${t.cor_principal}</td>
+          <td>
+            <button onclick="editar(${t.id})">Editar</button>
+            <button onclick="deletar(${t.id})">Excluir</button>
+          </td>
+        </tr>`;
+                }
+                document.getElementById("lista").innerHTML = html;
+            }
+
+            // POST /times ou PUT /times/:id — cria ou atualiza dependendo se há id preenchido
+            async function salvar(event) {
+                event.preventDefault();
+
+                const id = document.getElementById("editandoId").value;
+
+                // Monta o objeto com os dados do formulário
+                const dados = {
+                    nome: document.getElementById("nome").value,
+                    fundacao: document.getElementById("fundacao").value,
+                    estadio: document.getElementById("estadio").value,
+                    cor_principal: document.getElementById("corPrincipal").value,
+                };
+
+                if (id) {
+                    // PUT /times/:id — atualiza o time existente; body com os novos dados em JSON
+                    await fetch(`${API}/times/${id}`, {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(dados),
+                    });
+                } else {
+                    // POST /times — cria um novo time; body com os dados em JSON
+                    await fetch(`${API}/times`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(dados),
+                    });
+                }
+
+                document.getElementById("editandoId").value = "";
+                document.getElementById("btnCancelar").style.display = "none";
+                event.target.reset();
+                carregar(); // atualiza a tabela após salvar
+            }
+
+            // GET /times/:id — busca um time pelo id e preenche o formulário para edição
+            async function editar(id) {
+                const resp = await fetch(`${API}/times/${id}`); // requisição GET com o id na URL
+                const time = await resp.json();                 // objeto com os dados do time
+
+                // Preenche os campos do formulário com os dados recebidos da API
+                document.getElementById("editandoId").value = time.id;
+                document.getElementById("nome").value = time.nome;
+                document.getElementById("fundacao").value = time.fundacao;
+                document.getElementById("estadio").value = time.estadio;
+                document.getElementById("corPrincipal").value = time.cor_principal;
+                document.getElementById("btnCancelar").style.display = "inline";
+            }
+
+            // DELETE /times/:id — remove o time pelo id
+            async function deletar(id) {
+                if (!confirm("Excluir este time?")) return;
+                await fetch(`${API}/times/${id}`, { method: "DELETE" }); // sem body, só o método e o id na URL
+                carregar(); // atualiza a tabela após excluir
+            }
+
+            carregar(); // carrega a lista ao abrir a página
+        </script>
+    </body>
+</html>

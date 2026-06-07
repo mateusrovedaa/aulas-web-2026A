@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>APIs - Exibição na Página</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; }
+    h2 { border-bottom: 2px solid #333; padding-bottom: 8px; }
+    ul { list-style: none; padding: 0; }
+    li { background: #f4f4f4; margin: 6px 0; padding: 10px; border-radius: 4px; }
+    p.resultado { background: #f4f4f4; padding: 10px; border-radius: 4px; }
+    .erro { color: red; }
+  </style>
+</head>
+<body>
+  <h1>APIs BrasilAPI - Exibição na Página</h1>
+
+  <!-- 1. CEP -->
+  <section>
+    <h2>1. CEP</h2>
+    <p id="resultado-cep">Carregando...</p>
+  </section>
+
+  <!-- 2. CNPJ -->
+  <section>
+    <h2>2. CNPJ</h2>
+    <p id="resultado-cnpj">Carregando...</p>
+  </section>
+
+  <!-- 3. Feriados -->
+  <section>
+    <h2>3. Feriados Nacionais</h2>
+    <ul id="lista-feriados"></ul>
+  </section>
+
+  <!-- 4. DDD -->
+  <section>
+    <h2>4. DDD 51</h2>
+    <p id="resultado-ddd">Carregando...</p>
+    <ul id="lista-cidades-ddd"></ul>
+  </section>
+
+  <!-- 5. Bancos -->
+  <section>
+    <h2>5. Bancos do Brasil (primeiros 10)</h2>
+    <ul id="lista-bancos"></ul>
+  </section>
+
+  <!-- 6. IBGE -->
+  <section>
+    <h2>6. Municípios do RS - IBGE</h2>
+    <ul id="lista-ibge"></ul>
+  </section>
+
+  <script>
+    // 1. CEP
+    async function carregarCEP() {
+      const el = document.getElementById("resultado-cep");
+      try {
+        const resposta = await fetch("https://brasilapi.com.br/api/cep/v2/95967000");
+        const d = await resposta.json();
+        el.textContent = `${d.street}, ${d.neighborhood} - ${d.city}/${d.state} (CEP: ${d.cep})`;
+      } catch {
+        el.innerHTML = '<span class="erro">Erro ao buscar CEP.</span>';
+      }
+    }
+
+    // 2. CNPJ
+    async function carregarCNPJ() {
+      const el = document.getElementById("resultado-cnpj");
+      try {
+        const resposta = await fetch("https://brasilapi.com.br/api/cnpj/v1/00360305000104");
+        const d = await resposta.json();
+        el.textContent = `${d.razao_social} — ${d.descricao_situacao_cadastral}`;
+      } catch {
+        el.innerHTML = '<span class="erro">Erro ao buscar CNPJ.</span>';
+      }
+    }
+
+    // 3. Feriados
+    async function carregarFeriados() {
+      const lista = document.getElementById("lista-feriados");
+      try {
+        const ano = new Date().getFullYear();
+        const resposta = await fetch(`https://brasilapi.com.br/api/feriados/v1/${ano}`);
+        const dados = await resposta.json();
+
+        let html = "";
+        for (let i = 0; i < dados.length; i++) {
+          html += `<li><strong>${dados[i].date}</strong> — ${dados[i].name}</li>`;
+        }
+        lista.innerHTML = html;
+      } catch {
+        lista.innerHTML = '<li class="erro">Erro ao buscar feriados.</li>';
+      }
+    }
+
+    // 4. DDD
+    async function carregarDDD() {
+      const elEstado = document.getElementById("resultado-ddd");
+      const listaCidades = document.getElementById("lista-cidades-ddd");
+      try {
+        const resposta = await fetch("https://brasilapi.com.br/api/ddd/v1/51");
+        const d = await resposta.json();
+        elEstado.textContent = `Estado: ${d.state}`;
+
+        let html = "";
+        for (let i = 0; i < 10; i++) {
+          html += `<li>${d.cities[i]}</li>`;
+        }
+        html += "<li>...</li>";
+        listaCidades.innerHTML = html;
+      } catch {
+        elEstado.innerHTML = '<span class="erro">Erro ao buscar DDD.</span>';
+      }
+    }
+
+    // 5. Bancos
+    async function carregarBancos() {
+      const lista = document.getElementById("lista-bancos");
+      try {
+        const resposta = await fetch("https://brasilapi.com.br/api/banks/v1");
+        const dados = await resposta.json();
+
+        let html = "";
+        let count = 0;
+        for (let i = 0; i < dados.length && count < 10; i++) {
+          if (!dados[i].name) continue;
+          html += `<li><strong>${dados[i].code ?? "—"}</strong> — ${dados[i].fullName ?? dados[i].name}</li>`;
+          count++;
+        }
+        lista.innerHTML = html;
+      } catch {
+        lista.innerHTML = '<li class="erro">Erro ao buscar bancos.</li>';
+      }
+    }
+
+    // 6. IBGE
+    async function carregarIBGE() {
+      const lista = document.getElementById("lista-ibge");
+      try {
+        const resposta = await fetch("https://brasilapi.com.br/api/ibge/municipios/v1/RS");
+        const dados = await resposta.json();
+
+        let html = "";
+        for (let i = 0; i < 15; i++) {
+          html += `<li>${dados[i].nome} (código: ${dados[i].codigo_ibge})</li>`;
+        }
+        lista.innerHTML = html;
+      } catch {
+        lista.innerHTML = '<li class="erro">Erro ao buscar municípios.</li>';
+      }
+    }
+
+    carregarCEP();
+    carregarCNPJ();
+    carregarFeriados();
+    carregarDDD();
+    carregarBancos();
+    carregarIBGE();
+  </script>
+</body>
+</html>

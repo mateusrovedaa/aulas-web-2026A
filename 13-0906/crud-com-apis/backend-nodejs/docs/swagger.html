@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>API Times de Futebol — Documentação</title>
+  <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css">
+  <style>body { margin: 0; }</style>
+</head>
+<body>
+  <div id="swagger-ui"></div>
+  <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js"></script>
+  <script>
+    SwaggerUIBundle({
+      dom_id: '#swagger-ui',
+      spec: {
+        openapi: '3.0.0',
+        info: {
+          title: 'API Times de Futebol',
+          version: '1.0.0',
+          description: 'API REST implementada em **Node.js** (Express + PostgreSQL).\n\nO contrato de API é idêntico ao `backend-php` — o frontend não precisa saber qual backend está rodando.'
+        },
+        servers: [{ url: 'http://localhost:8080', description: 'Servidor local' }],
+        paths: {
+          '/times': {
+            get: {
+              summary: 'Lista todos os times',
+              responses: {
+                200: {
+                  description: 'Lista de times',
+                  content: {
+                    'application/json': {
+                      schema: { type: 'array', items: { $ref: '#/components/schemas/Time' } }
+                    }
+                  }
+                }
+              }
+            },
+            post: {
+              summary: 'Cria um novo time',
+              requestBody: {
+                required: true,
+                content: { 'application/json': { schema: { $ref: '#/components/schemas/TimeInput' } } }
+              },
+              responses: {
+                201: { description: 'Time criado com sucesso' }
+              }
+            }
+          },
+          '/times/{id}': {
+            get: {
+              summary: 'Busca um time por ID',
+              parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' }, example: 1 }],
+              responses: {
+                200: {
+                  description: 'Time encontrado',
+                  content: { 'application/json': { schema: { $ref: '#/components/schemas/Time' } } }
+                },
+                404: { description: 'Time não encontrado' }
+              }
+            },
+            put: {
+              summary: 'Atualiza um time',
+              parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }],
+              requestBody: {
+                required: true,
+                content: { 'application/json': { schema: { $ref: '#/components/schemas/TimeInput' } } }
+              },
+              responses: { 200: { description: 'Time atualizado com sucesso' } }
+            },
+            delete: {
+              summary: 'Remove um time',
+              parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }],
+              responses: { 200: { description: 'Time removido com sucesso' } }
+            }
+          }
+        },
+        components: {
+          schemas: {
+            Time: {
+              type: 'object',
+              properties: {
+                id:            { type: 'integer', example: 1 },
+                nome:          { type: 'string',  example: 'Grêmio' },
+                fundacao:      { type: 'string',  example: '1903' },
+                estadio:       { type: 'string',  example: 'Arena do Grêmio' },
+                cor_principal: { type: 'string',  example: 'Azul' }
+              }
+            },
+            TimeInput: {
+              type: 'object',
+              required: ['nome', 'fundacao', 'estadio', 'cor_principal'],
+              properties: {
+                nome:          { type: 'string', example: 'Grêmio' },
+                fundacao:      { type: 'string', example: '1903' },
+                estadio:       { type: 'string', example: 'Arena do Grêmio' },
+                cor_principal: { type: 'string', example: 'Azul' }
+              }
+            }
+          }
+        }
+      },
+      presets: [SwaggerUIBundle.presets.apis],
+      layout: 'BaseLayout'
+    });
+  </script>
+</body>
+</html>
